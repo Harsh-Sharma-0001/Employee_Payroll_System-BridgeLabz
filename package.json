@@ -1,0 +1,24 @@
+{
+  "name": "employee_payroll_system-bridgelabz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Harsh-Sharma-0001/Employee_Payroll_System-BridgeLabz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Harsh-Sharma-0001/Employee_Payroll_System-BridgeLabz/issues"
+  },
+  "homepage": "https://github.com/Harsh-Sharma-0001/Employee_Payroll_System-BridgeLabz#readme",
+  "dependencies": {
+    "ejs": "^4.0.1",
+    "express": "^5.2.1"
+  }
+}
