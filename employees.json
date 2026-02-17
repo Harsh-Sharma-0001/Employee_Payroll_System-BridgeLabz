@@ -1,14 +1,23 @@
 [
   {
-    "id": 1771235216187,
-    "name": "Shrey Mehrotriii",
-    "department": "ECE",
-    "salary": 200
+    "id": 1771340965680,
+    "name": "Harsh Sharma ",
+    "department": "CSE",
+    "basicSalary": 1000000,
+    "avatarColor": "yellow"
   },
   {
-    "id": 1771235257215,
+    "id": 1771340980163,
+    "name": "Shrey Mehrotriii",
+    "department": "ECE",
+    "basicSalary": 2000,
+    "avatarColor": "purple"
+  },
+  {
+    "id": 1771340997423,
     "name": "Halwaii",
     "department": "Majdoor",
-    "salary": 50
+    "basicSalary": 50,
+    "avatarColor": "pink"
   }
 ]

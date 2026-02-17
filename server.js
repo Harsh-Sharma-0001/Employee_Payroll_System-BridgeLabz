@@ -9,90 +9,85 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
-// HOME - Dashboard
+/* ================= HOME ================= */
 app.get("/", async (req, res) => {
-  const employees = await fileHandler.readData();
-  res.render("index", { employees });
+  try {
+    let employees = await fileHandler.read();
+
+    if (!Array.isArray(employees)) {
+      employees = [];
+    }
+
+    res.render("index", { employees });
+  } catch (err) {
+    console.error(err);
+    res.render("index", { employees: [] });
+  }
 });
 
-// ADD PAGE
+/* ================= ADD PAGE ================= */
 app.get("/add", (req, res) => {
   res.render("add");
 });
 
-// ADD EMPLOYEE
+/* ================= ADD POST ================= */
 app.post("/add", async (req, res) => {
-  let { name, department, salary } = req.body;
-
-  salary = Number(salary);
-
-  if (!name || salary < 0) {
-    return res.send("Invalid Input!");
-  }
-
-  const employees = await fileHandler.readData();
+  const employees = await fileHandler.read();
 
   const newEmployee = {
     id: Date.now(),
-    name,
-    department,
-    salary,
+    name: req.body.name,
+    department: req.body.department,
+    basicSalary: Number(req.body.basicSalary),
+    avatarColor: req.body.avatarColor || "blue",
   };
 
   employees.push(newEmployee);
-
-  await fileHandler.writeData(employees);
+  await fileHandler.write(employees);
 
   res.redirect("/");
 });
 
-// DELETE EMPLOYEE
+/* ================= DELETE ================= */
 app.get("/delete/:id", async (req, res) => {
-  const id = Number(req.params.id);
+  let employees = await fileHandler.read();
 
-  let employees = await fileHandler.readData();
-  employees = employees.filter((emp) => emp.id !== id);
+  employees = employees.filter((emp) => emp.id != req.params.id);
 
-  await fileHandler.writeData(employees);
-
+  await fileHandler.write(employees);
   res.redirect("/");
 });
 
-// EDIT PAGE
+/* ================= EDIT PAGE ================= */
 app.get("/edit/:id", async (req, res) => {
-  const id = Number(req.params.id);
-  const employees = await fileHandler.readData();
+  const employees = await fileHandler.read();
+  const employee = employees.find((emp) => emp.id == req.params.id);
 
-  const employee = employees.find((emp) => emp.id === id);
+  if (!employee) return res.redirect("/");
 
   res.render("edit", { employee });
 });
 
-// UPDATE EMPLOYEE
+/* ================= EDIT POST ================= */
 app.post("/edit/:id", async (req, res) => {
-  const id = Number(req.params.id);
-  let { name, department, salary } = req.body;
+  const employees = await fileHandler.read();
 
-  salary = Number(salary);
-
-  if (!name || salary < 0) {
-    return res.send("Invalid Input!");
-  }
-
-  const employees = await fileHandler.readData();
-
-  const updatedEmployees = employees.map((emp) => {
-    if (emp.id === id) {
-      return { id, name, department, salary };
+  const updated = employees.map((emp) => {
+    if (emp.id == req.params.id) {
+      return {
+        ...emp,
+        name: req.body.name,
+        department: req.body.department,
+        basicSalary: Number(req.body.basicSalary),
+        avatarColor: req.body.avatarColor,
+      };
     }
     return emp;
   });
 
-  await fileHandler.writeData(updatedEmployees);
-
+  await fileHandler.write(updated);
   res.redirect("/");
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

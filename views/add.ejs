@@ -1,21 +1,92 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Add Employee</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
 
-    <h2>Add Employee</h2>
+    <div class="topbar">
+        <div class="brand">
+            <i class="fa-solid fa-user-circle"></i>
+            <span>EMPLOYEE PAYROLL</span>
+        </div>
+    </div>
 
-    <form action="/add" method="POST">
-        <input type="text" name="name" placeholder="Name" required>
-        <input type="text" name="department" placeholder="Department" required>
-        <input type="number" name="salary" placeholder="Salary" required>
-        <button type="submit">Add</button>
-    </form>
+    <div class="form-container">
 
-    <a href="/">Back</a>
+        <h2>Add Employee</h2>
+
+        <form action="/add" method="POST">
+
+            <!-- Hidden avatar input -->
+            <input type="hidden" name="avatarColor" id="avatarColor" value="blue">
+
+            <!-- Avatar Selection -->
+            <div class="avatar-row">
+
+                <div class="avatar blue active" onclick="selectAvatar('blue', this)">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div class="avatar green" onclick="selectAvatar('green', this)">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div class="avatar pink" onclick="selectAvatar('pink', this)">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div class="avatar yellow" onclick="selectAvatar('yellow', this)">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div class="avatar purple" onclick="selectAvatar('purple', this)">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" name="department" required>
+            </div>
+
+            <div class="form-group">
+                <label>Basic Salary</label>
+                <input type="number" name="basicSalary" min="0" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="save-btn">Save</button>
+                <a href="/" class="cancel-btn">Back</a>
+            </div>
+
+        </form>
+
+    </div>
+
+    <script>
+        function selectAvatar(color, element) {
+
+            document.getElementById("avatarColor").value = color;
+
+            document.querySelectorAll(".avatar").forEach(a => {
+                a.classList.remove("active");
+            });
+
+            element.classList.add("active");
+        }
+    </script>
 
 </body>
+
 </html>

@@ -3,21 +3,17 @@ const path = require("path");
 
 const filePath = path.join(__dirname, "../employees.json");
 
-async function readData() {
+async function read() {
   try {
-    const data = await fs.readFile(filePath, "utf-8");
+    const data = await fs.readFile(filePath, "utf8");
     return JSON.parse(data || "[]");
   } catch (err) {
     return [];
   }
 }
 
-async function writeData(data) {
-  try {
-    await fs.writeFile(filePath, JSON.stringify(data, null, 2));
-  } catch (err) {
-    console.error("Error writing file:", err);
-  }
+async function write(data) {
+  await fs.writeFile(filePath, JSON.stringify(data, null, 2));
 }
 
-module.exports = { readData, writeData };
+module.exports = { read, write };

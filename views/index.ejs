@@ -2,52 +2,161 @@
 <html>
 
 <head>
-    <title>Employee Dashboard</title>
+    <title>Employee Payroll</title>
     <link rel="stylesheet" href="/style.css">
+
+    <!-- Font Awesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
-    <h1>Employee Payroll System</h1>
 
-    <a href="/add">➕ Add Employee</a>
+    <!-- ================= TOPBAR ================= -->
+    <div class="topbar">
+        <div class="brand">
+            <i class="fa-solid fa-user-circle"></i>
+            <span>EMPLOYEE PAYROLL</span>
+        </div>
+    </div>
 
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Department</th>
-            <th>Basic Salary</th>
-            <th>Tax (12%)</th>
-            <th>Net Salary</th>
-            <th>Actions</th>
-        </tr>
+    <div class="main">
 
-        <% employees.forEach(emp=> {
-            const tax = emp.salary * 0.12;
-            const net = emp.salary - tax;
+        <!-- ================= PAGE HEADER ================= -->
+        <div class="page-header">
+            <h2>Employee Details</h2>
+
+            <a href="/add" class="add-btn">
+                <i class="fa-solid fa-user-plus"></i> Add User
+            </a>
+        </div>
+
+        <% /* SAFE HANDLING */ let employeeList=Array.isArray(employees) ? employees : []; let totalSalary=0; let
+            totalTax=0; employeeList.forEach(emp=> {
+            totalSalary += Number(emp.basicSalary) || 0;
+            totalTax += (Number(emp.basicSalary) || 0) * 0.12;
+            });
+
+            let totalNet = totalSalary - totalTax;
             %>
 
-            <tr>
-                <td>
-                    <%= emp.name %>
-                </td>
-                <td>
-                    <%= emp.department %>
-                </td>
-                <td>₹<%= emp.salary %>
-                </td>
-                <td>₹<%= tax %>
-                </td>
-                <td>₹<%= net %>
-                </td>
-                <td>
-                    <a href="/edit/<%= emp.id %>">Edit</a>
-                    <a href="/delete/<%= emp.id %>" onclick="return confirm('Delete?')">Delete</a>
-                </td>
-            </tr>
+            <!-- ================= STATS SECTION ================= -->
+            <div class="stats">
 
-        <% }) %>
+                <div class="stat">
+                    <i class="fa-solid fa-users"></i>
+                    <div>
+                        <small>Total Employees</small>
+                        <p>
+                            <%= employeeList.length %>
+                        </p>
+                    </div>
+                </div>
 
-    </table>
+                <div class="stat">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                    <div>
+                        <small>Total Salary</small>
+                        <p>₹<%= totalSalary.toFixed(2) %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <i class="fa-solid fa-coins"></i>
+                    <div>
+                        <small>Total Tax (12%)</small>
+                        <p>₹<%= totalTax.toFixed(2) %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <i class="fa-solid fa-wallet"></i>
+                    <div>
+                        <small>Net Salary</small>
+                        <p>₹<%= totalNet.toFixed(2) %>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================= EMPLOYEE TABLE ================= -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="fa-solid fa-user"></i> Name</th>
+                            <th><i class="fa-solid fa-building"></i> Department</th>
+                            <th><i class="fa-solid fa-money-bill-wave"></i> Salary</th>
+                            <th><i class="fa-solid fa-percent"></i> Tax</th>
+                            <th><i class="fa-solid fa-wallet"></i> Net</th>
+                            <th><i class="fa-solid fa-gear"></i> Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% if (employeeList.length===0) { %>
+                            <tr>
+                                <td colspan="6">No employees found.</td>
+                            </tr>
+                            <% } else { %>
+
+                                <% employeeList.forEach(employee=> {
+                                    const salary = Number(employee.basicSalary) || 0;
+                                    const tax = salary * 0.12;
+                                    const net = salary - tax;
+                                    %>
+
+                                    <tr>
+
+                                        <!-- Avatar + Name -->
+                                        <td>
+                                            <div class="name-cell">
+                                                <div class="avatar small <%= employee.avatarColor || 'blue' %>">
+                                                    <i class="fa-solid fa-user"></i>
+                                                </div>
+                                                <span>
+                                                    <%= employee.name %>
+                                                </span>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <%= employee.department %>
+                                        </td>
+
+                                        <td>₹<%= salary.toFixed(2) %>
+                                        </td>
+
+                                        <td>₹<%= tax.toFixed(2) %>
+                                        </td>
+
+                                        <td>₹<%= net.toFixed(2) %>
+                                        </td>
+
+                                        <td>
+                                            <a href="/edit/<%= employee.id %>" class="edit">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+
+                                            <a href="/delete/<%= employee.id %>"
+                                                onclick="return confirm('Delete this employee?')" class="delete">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </td>
+
+                                    </tr>
+
+                                    <% }) %>
+
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+    </div>
+
 </body>
 
 </html>
