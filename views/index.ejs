@@ -11,7 +11,7 @@
 
 <body>
 
-    <!-- ================= TOPBAR ================= -->
+    <!-- Topbar -->
     <div class="topbar">
         <div class="brand">
             <i class="fa-solid fa-user-circle"></i>
@@ -21,25 +21,52 @@
 
     <div class="main">
 
-        <!-- ================= PAGE HEADER ================= -->
         <div class="page-header">
             <h2>Employee Details</h2>
 
-            <a href="/add" class="add-btn">
-                <i class="fa-solid fa-user-plus"></i> Add User
-            </a>
+            <div class="header-actions">
+
+                <!-- Search Toggle Icon -->
+                <button type="button" class="search-toggle" onclick="toggleSearch()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
+                <!-- Search Form -->
+                <form method="GET" action="/" class="search-form" id="searchForm">
+                    <input type="text" name="search" id="searchInput" placeholder="Search employee..."
+                        value="<%= search || '' %>">
+
+                    <button type="submit">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <a href="/add" class="add-btn">
+                    <i class="fa-solid fa-user-plus"></i> Add User
+                </a>
+
+            </div>
         </div>
 
-        <% /* SAFE HANDLING */ let employeeList=Array.isArray(employees) ? employees : []; let totalSalary=0; let
-            totalTax=0; employeeList.forEach(emp=> {
-            totalSalary += Number(emp.basicSalary) || 0;
-            totalTax += (Number(emp.basicSalary) || 0) * 0.12;
+        <% let employeeList=Array.isArray(employees) ? employees : []; let totalSalary=0; let totalTax=0;
+            employeeList.forEach(emp=> {
+            totalSalary += emp.basicSalary;
+            totalTax += emp.basicSalary * 0.12;
             });
 
-            let totalNet = totalSalary - totalTax;
+            const totalNet = totalSalary - totalTax;
+
+            // Departments
+            let departments = [...new Set(employeeList.map(emp => emp.department))];
+            let totalDepartments = departments.length;
+
+            // ✅ Average Salary
+            let averageSalary = employeeList.length > 0
+            ? totalSalary / employeeList.length
+            : 0;
             %>
 
-            <!-- ================= STATS SECTION ================= -->
+            <!-- Stats Section -->
             <div class="stats">
 
                 <div class="stat">
@@ -48,6 +75,16 @@
                         <small>Total Employees</small>
                         <p>
                             <%= employeeList.length %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <i class="fa-solid fa-building"></i>
+                    <div>
+                        <small>Total Departments</small>
+                        <p>
+                            <%= totalDepartments %>
                         </p>
                     </div>
                 </div>
@@ -79,9 +116,19 @@
                     </div>
                 </div>
 
+                <!-- ✅ NEW Average Salary Card -->
+                <div class="stat">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <div>
+                        <small>Average Salary</small>
+                        <p>₹<%= averageSalary.toFixed(2) %>
+                        </p>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- ================= EMPLOYEE TABLE ================= -->
+            <!-- Employee Table -->
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -103,14 +150,12 @@
                             <% } else { %>
 
                                 <% employeeList.forEach(employee=> {
-                                    const salary = Number(employee.basicSalary) || 0;
-                                    const tax = salary * 0.12;
-                                    const net = salary - tax;
+                                    const tax = employee.basicSalary * 0.12;
+                                    const net = employee.basicSalary - tax;
                                     %>
 
                                     <tr>
 
-                                        <!-- Avatar + Name -->
                                         <td>
                                             <div class="name-cell">
                                                 <div class="avatar small <%= employee.avatarColor || 'blue' %>">
@@ -126,7 +171,7 @@
                                             <%= employee.department %>
                                         </td>
 
-                                        <td>₹<%= salary.toFixed(2) %>
+                                        <td>₹<%= employee.basicSalary %>
                                         </td>
 
                                         <td>₹<%= tax.toFixed(2) %>
@@ -158,5 +203,18 @@
     </div>
 
 </body>
+<script>
+    function toggleSearch() {
+        const form = document.getElementById("searchForm");
+        const input = document.getElementById("searchInput");
+
+        form.classList.toggle("active");
+
+        if (form.classList.contains("active")) {
+            input.focus();
+        }
+    }
+</script>
+
 
 </html>
